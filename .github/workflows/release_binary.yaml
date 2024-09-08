@@ -1,0 +1,35 @@
+---
+name: Release Binary
+
+on:
+  push:
+    tags:
+      - '*' # Run release on any tag. Will be marked as draft by default anyway.
+
+permissions: write-all
+
+# This workflow creates a release using goreleaser
+# via the 'make release' command.
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: true
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - run: echo https://github.com/cosmos/relayer/blob/${GITHUB_REF#refs/tags/}/CHANGELOG.md#${GITHUB_REF#refs/tags/} > ../release_notes.md
+
+      - name: setup release environment
+        run: |-
+          echo 'GITHUB_TOKEN=${{secrets.GITHUB_TOKEN}}' > .release-env
+      - name: release publish
+        run: make release
