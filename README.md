@@ -43,3 +43,5 @@ make docker-build
 
 docker run -v <path-to-config-file>:/.eibc-client.yaml eibc-client --config /.eibc-client.yaml
 ```
+
+upd
